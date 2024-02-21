@@ -28,6 +28,11 @@
   $ pip install .
   ```
 
+- Uninstall
+  ```
+  $ pip uninstall pyscancontext
+  ```
+
 ## Use examples  
 - For the hands-on exploration of the supported features, for example (you need `numpy` and `open3d`),
   ```

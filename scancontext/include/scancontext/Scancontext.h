@@ -57,6 +57,7 @@ public:
     void saveScancontextAndKeys( Eigen::MatrixXd & sc );
     void makeAndSaveScancontextAndKeys( Eigen::MatrixX3d & _scan_down );
     std::tuple<int, double, double> detectLoopClosureID( void ); // int: nearest node index, float: relative yaw  
+    std::tuple<int, double, double> makeScancontextAndFindSimilar ( Eigen::MatrixX3d & _scan_down );
 
     void printParameters(void) {
         cout << "NUM_RING: " << PC_NUM_RING << endl; 
@@ -87,7 +88,7 @@ public:
     const double PC_UNIT_RINGGAP = PC_MAX_RADIUS / double(PC_NUM_RING);
 
     // tree
-    const int    NUM_EXCLUDE_RECENT = 50; // simply just keyframe gap, but node position distance-based exclusion is ok. 
+    const int    NUM_EXCLUDE_RECENT = 0; // simply just keyframe gap, but node position distance-based exclusion is ok. 
     const int    NUM_CANDIDATES_FROM_TREE = 10; // 10 is enough. (refer the IROS 18 paper)
 
     // loop thres
@@ -96,7 +97,7 @@ public:
     // const double SC_DIST_THRES = 0.5; // 0.4-0.6 is good choice for using with robust kernel (e.g., Cauchy, DCS) + icp fitness threshold / if not, recommend 0.1-0.15
 
     // config 
-    const int    TREE_MAKING_PERIOD_ = 50; // i.e., remaking tree frequency, to avoid non-mandatory every remaking, to save time cost / if you want to find a very recent revisits use small value of it (it is enough fast ~ 5-50ms wrt N.).
+    const int    TREE_MAKING_PERIOD_ = 1; // i.e., remaking tree frequency, to avoid non-mandatory every remaking, to save time cost / if you want to find a very recent revisits use small value of it (it is enough fast ~ 5-50ms wrt N.).
     int          tree_making_period_conter = 0;
 
     // data 

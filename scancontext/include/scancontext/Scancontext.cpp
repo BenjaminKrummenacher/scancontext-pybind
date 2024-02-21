@@ -224,6 +224,53 @@ void SCManager::makeAndSaveScancontextAndKeys(Eigen::MatrixX3d& _scan_down)
     saveScancontextAndKeys(sc);
 } 
 
+std::tuple<int, double, double> SCManager::makeScancontextAndFindSimilar( Eigen::MatrixX3d & _scan_down )
+{
+    Eigen::MatrixXd sc = makeScancontext(_scan_down); // v1
+    Eigen::MatrixXd ringkey = makeRingkeyFromScancontext( sc );
+    Eigen::MatrixXd sectorkey = makeSectorkeyFromScancontext( sc );
+    std::vector<float> polarcontext_invkey_vec = eig2stdvec( ringkey );
+
+    int loop_id { -1 }; // init with -1, -1 means no loop (== LeGO-LOAM's variable "closestHistoryFrameID")
+
+    constructTree(); // TODO: remove this, construct tree only once
+
+    double min_dist = 10000000; // init with somthing large
+    int nn_align = 0;
+    int nn_idx = 0;
+
+    // knn search
+    std::vector<size_t> candidate_indexes( NUM_CANDIDATES_FROM_TREE ); 
+    std::vector<float> out_dists_sqr( NUM_CANDIDATES_FROM_TREE );
+
+    nanoflann::KNNResultSet<float> knnsearch_result( NUM_CANDIDATES_FROM_TREE );
+    knnsearch_result.init( &candidate_indexes[0], &out_dists_sqr[0] );
+    polarcontext_tree_->index->findNeighbors( knnsearch_result, &polarcontext_invkey_vec[0] /* query */, nanoflann::SearchParams(10) ); 
+
+    for ( int candidate_iter_idx = 0; candidate_iter_idx < NUM_CANDIDATES_FROM_TREE; candidate_iter_idx++ )
+    {
+        MatrixXd polarcontext_candidate = polarcontexts_[ candidate_indexes[candidate_iter_idx] ];
+        std::pair<double, int> sc_dist_result = distanceBtnScanContext( sc, polarcontext_candidate ); 
+        
+        double candidate_dist = sc_dist_result.first;
+        int candidate_align = sc_dist_result.second;
+
+        if( candidate_dist < min_dist )
+        {            
+            min_dist = candidate_dist;
+            nn_align = candidate_align;
+
+            nn_idx = candidate_indexes[candidate_iter_idx];
+
+            loop_id = nn_idx;
+        }
+    }
+
+    double yaw_diff_rad = deg2rad(nn_align * PC_UNIT_SECTORANGLE);
+    std::tuple<int, double, double> result {loop_id, min_dist, yaw_diff_rad};
+    return result;
+}
+
 void SCManager::constructTree(void) 
 {
     polarcontext_invkeys_to_search_.clear();
