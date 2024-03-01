@@ -43,6 +43,11 @@ class SCManager
 {
 public: 
     SCManager( ) = default; // reserving data space (of std::vector) could be considered. but the descriptor is lightweight so don't care.
+    SCManager(int pc_num_ring_val, int pc_num_sector_val, double pc_max_radius_val, int num_candidates_from_tree_val, double search_ratio_val)
+        : PC_NUM_RING(pc_num_ring_val), PC_NUM_SECTOR(pc_num_sector_val), PC_MAX_RADIUS(pc_max_radius_val),
+         NUM_CANDIDATES_FROM_TREE(num_candidates_from_tree_val), SEARCH_RATIO(search_ratio_val)
+    {
+    }
 
     Eigen::MatrixXd makeScancontext( Eigen::MatrixX3d & _scan_down );
     Eigen::MatrixXd makeRingkeyFromScancontext( Eigen::MatrixXd &_desc );
@@ -63,6 +68,8 @@ public:
         cout << "NUM_RING: " << PC_NUM_RING << endl; 
         cout << "NUM_SECTOR: " << PC_NUM_SECTOR << endl; 
         cout << "MAX_RADIUS: " << PC_MAX_RADIUS << endl; 
+        cout << "NUM_CANDIDATES_FROM_TREE: " << NUM_CANDIDATES_FROM_TREE << endl; 
+        cout << "SEARCH_RATIO: " << SEARCH_RATIO << endl; 
     }
 
     Eigen::MatrixXd getSCD(int _idx) {
@@ -79,8 +86,6 @@ public:
 
 public:
     // hyper parameters ()
-    const double LIDAR_HEIGHT = 2.0; // lidar height : add this for simply directly using lidar scan in the lidar local coord (not robot base coord) / if you use robot-coord-transformed lidar scans, just set this as 0.
-
     const int    PC_NUM_RING = 20; // 20 in the original paper (IROS 18)
     const int    PC_NUM_SECTOR = 60; // 60 in the original paper (IROS 18)
     const double PC_MAX_RADIUS = 80.0; // 80 meter max in the original paper (IROS 18)
