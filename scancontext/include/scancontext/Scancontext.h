@@ -62,7 +62,7 @@ public:
     void saveScancontextAndKeys( Eigen::MatrixXd & sc );
     void makeAndSaveScancontextAndKeys( Eigen::MatrixX3d & _scan_down );
     std::tuple<int, double, double> detectLoopClosureID( void ); // int: nearest node index, float: relative yaw  
-    std::tuple<int, double, double> makeScancontextAndFindSimilar ( Eigen::MatrixX3d & _scan_down );
+    std::tuple<int, double, double> FindSimilar ( Eigen::MatrixXd& sc );
 
     void printParameters(void) {
         cout << "NUM_RING: " << PC_NUM_RING << endl; 

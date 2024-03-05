@@ -224,16 +224,14 @@ void SCManager::makeAndSaveScancontextAndKeys(Eigen::MatrixX3d& _scan_down)
     saveScancontextAndKeys(sc);
 } 
 
-std::tuple<int, double, double> SCManager::makeScancontextAndFindSimilar( Eigen::MatrixX3d & _scan_down )
+// call constructTree() before
+std::tuple<int, double, double> SCManager::FindSimilar( Eigen::MatrixXd& sc)
 {
-    Eigen::MatrixXd sc = makeScancontext(_scan_down); // v1
     Eigen::MatrixXd ringkey = makeRingkeyFromScancontext( sc );
     Eigen::MatrixXd sectorkey = makeSectorkeyFromScancontext( sc );
     std::vector<float> polarcontext_invkey_vec = eig2stdvec( ringkey );
 
     int loop_id { -1 }; // init with -1, -1 means no loop (== LeGO-LOAM's variable "closestHistoryFrameID")
-
-    constructTree(); // TODO: remove this, construct tree only once
 
     double min_dist = 10000000; // init with somthing large
     int nn_align = 0;

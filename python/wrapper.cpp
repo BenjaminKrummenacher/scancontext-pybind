@@ -23,6 +23,6 @@ PYBIND11_MODULE(pyscancontext, m) {
         .def("construct_tree", &SCManager::constructTree, py::return_value_policy::copy)
         .def("add_scancontext", &SCManager::saveScancontextAndKeys, py::return_value_policy::copy)
         .def("add_node", &SCManager::makeAndSaveScancontextAndKeys, py::return_value_policy::copy)
-        .def("find_similar", &SCManager::makeScancontextAndFindSimilar, py::return_value_policy::copy)
+        .def("find_similar", &SCManager::FindSimilar, py::return_value_policy::copy)
         .def("detect_loop", &SCManager::detectLoopClosureID, py::return_value_policy::copy);
 }
